@@ -26,8 +26,9 @@ def saveFinalMask(s, params):
     logging.info(f"{s['filename']} - \tsaveUsableRegion")
 
     mask = s["img_mask_use"]
-    print(type(mask))
-    print('min, max', mask.max(), mask.min())
+    message = f"{type(mask)}"
+    logging.warning(message)
+    s["warnings"].append(message)
     for mask_force in s["img_mask_force"]:
         mask[s[mask_force]] = 0
 
