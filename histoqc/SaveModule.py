@@ -18,15 +18,19 @@ def blend2Images(img, mask):
     out = np.concatenate((mask, img, mask), 2)
     return out
 
+def saveFinalMaskToDicom(s, params): 
+    pass 
 
 def saveFinalMask(s, params):
     logging.info(f"{s['filename']} - \tsaveUsableRegion")
 
     mask = s["img_mask_use"]
+    print('min, max', max(mask), min(mask))
     for mask_force in s["img_mask_force"]:
         mask[s[mask_force]] = 0
 
     io.imsave(s["outdir"] + os.sep + s["filename"] + "_mask_use.png", img_as_ubyte(mask))
+    saveFinalMaskToDicom(s, params)
 
     if strtobool(params.get("use_mask", "True")):  # should we create and save the fusion mask?
         img = s.getImgThumb(s["image_work_size"])
