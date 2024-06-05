@@ -21,11 +21,13 @@ def blend2Images(img, mask):
 def saveFinalMaskToDicom(s, params): 
     pass 
 
+
 def saveFinalMask(s, params):
     logging.info(f"{s['filename']} - \tsaveUsableRegion")
 
     mask = s["img_mask_use"]
-    print('min, max', max(mask), min(mask))
+    print(type(mask))
+    print('min, max', mask.max(), mask.min())
     for mask_force in s["img_mask_force"]:
         mask[s[mask_force]] = 0
 
