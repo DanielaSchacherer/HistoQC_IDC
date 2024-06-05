@@ -6,7 +6,7 @@ from skimage import color
 import numpy as np
 
 import matplotlib.pyplot as plt
-
+import highdicom as hd 
 
 def blend2Images(img, mask):
     if (img.ndim == 3):
@@ -18,22 +18,20 @@ def blend2Images(img, mask):
     out = np.concatenate((mask, img, mask), 2)
     return out
 
-def saveFinalMaskToDicom(s, params): 
-    pass 
+def saveFinalMaskToDicom(mask: np.ndarray[bool], params) -> None:
+    binary_mask = img_as_ubyte(mask) 
+    
 
 
 def saveFinalMask(s, params):
     logging.info(f"{s['filename']} - \tsaveUsableRegion")
 
     mask = s["img_mask_use"]
-    message = f"{np.unique(img_as_ubyte(mask))}"
-    logging.warning(message)
-    s["warnings"].append(message)
     for mask_force in s["img_mask_force"]:
         mask[s[mask_force]] = 0
 
     io.imsave(s["outdir"] + os.sep + s["filename"] + "_mask_use.png", img_as_ubyte(mask))
-    saveFinalMaskToDicom(s, params)
+    saveFinalMaskToDicom(mask, params)
 
     if strtobool(params.get("use_mask", "True")):  # should we create and save the fusion mask?
         img = s.getImgThumb(s["image_work_size"])
