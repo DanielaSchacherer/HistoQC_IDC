@@ -37,7 +37,7 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
 
     source_image = dcmread(os.path.join(s['dir'], s['filename']))
     seg = hd.seg.Segmentation(
-        source_images=[s['os_handle']],
+        source_images=[source_image],
         pixel_array=binary_mask,
         segmentation_type=hd.seg.SegmentationTypeValues.BINARY,
         segment_descriptions=segment_descriptions,
