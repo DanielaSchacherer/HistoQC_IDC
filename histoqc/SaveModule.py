@@ -6,6 +6,7 @@ from skimage import color
 import numpy as np
 
 import matplotlib.pyplot as plt
+from histoqc.BaseImage import BaseImage
 import highdicom as hd 
 
 def blend2Images(img, mask):
