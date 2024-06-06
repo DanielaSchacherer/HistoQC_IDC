@@ -28,7 +28,7 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     segment_descriptions = [
         hd.seg.SegmentDescription(
             segment_number=1,
-            segment_label='usable area',
+            segment_label='Segment #1',
             segmented_property_category=property_category,
             segmented_property_type=property_type,
             algorithm_type=hd.seg.SegmentAlgorithmTypeValues.MANUAL,
@@ -61,7 +61,7 @@ def saveFinalMask(s, params):
         mask[s[mask_force]] = 0
 
     # printing testing 
-    message = f"{img_as_ubyte(mask).shape}"
+    message = f"{img_as_ubyte(mask).ndim}"
     logging.warning(message)
     s["warnings"].append(message)
 
