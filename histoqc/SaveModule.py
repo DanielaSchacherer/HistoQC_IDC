@@ -18,7 +18,7 @@ def blend2Images(img, mask):
     out = np.concatenate((mask, img, mask), 2)
     return out
 
-def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], params) -> None:
+def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     binary_mask = img_as_ubyte(mask) 
     
     property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure")
@@ -34,7 +34,7 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], params) -> None:
     ]
 
     seg = hd.seg.Segmentation(
-        source_images=[sm_image],
+        source_images=[s['os_handle']],
         pixel_array=binary_mask,
         segmentation_type=hd.seg.SegmentationTypeValues.BINARY,
         segment_descriptions=segment_descriptions,
@@ -57,12 +57,12 @@ def saveFinalMask(s, params):
         mask[s[mask_force]] = 0
 
     # printing testing 
-    message = f"{type(s)}, {s['filename']}"
+    message = f"{type(s)}, {s['os_handle']}"
     logging.warning(message)
     s["warnings"].append(message)
 
     io.imsave(s["outdir"] + os.sep + s["filename"] + "_mask_use.png", img_as_ubyte(mask))
-    saveFinalMaskToDicomSeg(mask, params)
+    saveFinalMaskToDicomSeg(mask, s)
 
     if strtobool(params.get("use_mask", "True")):  # should we create and save the fusion mask?
         img = s.getImgThumb(s["image_work_size"])
