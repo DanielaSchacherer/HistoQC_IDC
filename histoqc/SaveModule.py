@@ -27,7 +27,16 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     logging.warning(message)
     s["warnings"].append(message)
 
-    
+    source_image = dcmread(os.path.join(s['dir'], s['filename']))
+    test_mask = np.zeros(
+    (
+        source_image.TotalPixelMatrixRows,
+        source_image.TotalPixelMatrixColumns
+    ),
+    dtype=np.uint8,
+    )
+    test_mask[38:43, 5:41] = 1
+
     property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure")
     property_type = hd.sr.CodedConcept("84640000", "SCT", "Nucleus")
     segment_descriptions = [
@@ -37,13 +46,13 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
             segmented_property_category=property_category,
             segmented_property_type=property_type,
             algorithm_type=hd.seg.SegmentAlgorithmTypeValues.MANUAL,
-        ),
+        )
     ]
 
-    source_image = dcmread(os.path.join(s['dir'], s['filename']))
+    
     seg = hd.seg.Segmentation(
         source_images=[source_image],
-        pixel_array=binary_mask,
+        pixel_array=test_mask,
         segmentation_type=hd.seg.SegmentationTypeValues.BINARY,
         segment_descriptions=segment_descriptions,
         series_instance_uid=hd.UID(),
