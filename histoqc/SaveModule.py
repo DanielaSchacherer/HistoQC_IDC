@@ -57,7 +57,7 @@ def saveFinalMask(s, params):
         mask[s[mask_force]] = 0
 
     # printing testing 
-    message = f"{s}"
+    message = f"{type(s)}, {s['filename']}"
     logging.warning(message)
     s["warnings"].append(message)
 
