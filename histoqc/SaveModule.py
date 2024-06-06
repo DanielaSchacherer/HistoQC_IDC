@@ -22,6 +22,11 @@ def blend2Images(img, mask):
 
 def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     binary_mask = img_as_ubyte(mask) 
+    # printing testing 
+    message = f"bindim {binary_mask.ndim}"
+    logging.warning(message)
+    s["warnings"].append(message)
+
     
     property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure")
     property_type = hd.sr.CodedConcept("84640000", "SCT", "Nucleus")
