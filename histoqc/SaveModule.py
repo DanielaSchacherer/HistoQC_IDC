@@ -61,7 +61,7 @@ def saveFinalMask(s, params):
         mask[s[mask_force]] = 0
 
     # printing testing 
-    message = f"{type(s)}, {s['os_handle']}"
+    message = f"{img_as_ubyte(mask).shape()}"
     logging.warning(message)
     s["warnings"].append(message)
 
