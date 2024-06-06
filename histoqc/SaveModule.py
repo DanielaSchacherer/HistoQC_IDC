@@ -8,6 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from histoqc.BaseImage import BaseImage
 import highdicom as hd 
+from pydicom import dcmread
 
 def blend2Images(img, mask):
     if (img.ndim == 3):
@@ -34,6 +35,7 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
         ),
     ]
 
+    source_image = dcmread(os.path.join(s['dir'], s['filename']))
     seg = hd.seg.Segmentation(
         source_images=[s['os_handle']],
         pixel_array=binary_mask,
@@ -49,6 +51,7 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
         device_serial_number='1234567890',
         tile_pixel_array=True,
     )
+
 
 def saveFinalMask(s, params):
     logging.info(f"{s['filename']} - \tsaveUsableRegion")
