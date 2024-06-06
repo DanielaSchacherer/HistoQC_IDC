@@ -18,10 +18,36 @@ def blend2Images(img, mask):
     out = np.concatenate((mask, img, mask), 2)
     return out
 
-def saveFinalMaskToDicom(mask: np.ndarray[bool], params) -> None:
+def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], params) -> None:
     binary_mask = img_as_ubyte(mask) 
     
+    property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure")
+    property_type = hd.sr.CodedConcept("84640000", "SCT", "Nucleus")
+    segment_descriptions = [
+        hd.seg.SegmentDescription(
+            segment_number=1,
+            segment_label='usable area',
+            segmented_property_category=property_category,
+            segmented_property_type=property_type,
+            algorithm_type=hd.seg.SegmentAlgorithmTypeValues.MANUAL,
+        ),
+    ]
 
+    seg = hd.seg.Segmentation(
+        source_images=[sm_image],
+        pixel_array=binary_mask,
+        segmentation_type=hd.seg.SegmentationTypeValues.BINARY,
+        segment_descriptions=segment_descriptions,
+        series_instance_uid=hd.UID(),
+        series_number=1,
+        sop_instance_uid=hd.UID(),
+        instance_number=1,
+        manufacturer='Foo Corp.',
+        manufacturer_model_name='Slide Segmentation Algorithm',
+        software_versions='0.0.1',
+        device_serial_number='1234567890',
+        tile_pixel_array=True,
+    )
 
 def saveFinalMask(s, params):
     logging.info(f"{s['filename']} - \tsaveUsableRegion")
@@ -30,8 +56,13 @@ def saveFinalMask(s, params):
     for mask_force in s["img_mask_force"]:
         mask[s[mask_force]] = 0
 
+    # printing testing 
+    message = f"{s}"
+    logging.warning(message)
+    s["warnings"].append(message)
+
     io.imsave(s["outdir"] + os.sep + s["filename"] + "_mask_use.png", img_as_ubyte(mask))
-    saveFinalMaskToDicom(mask, params)
+    saveFinalMaskToDicomSeg(mask, params)
 
     if strtobool(params.get("use_mask", "True")):  # should we create and save the fusion mask?
         img = s.getImgThumb(s["image_work_size"])
