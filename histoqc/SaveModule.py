@@ -1,6 +1,6 @@
 import logging
 import os
-from skimage import io, img_as_float
+from skimage import io, img_as_ubyte, img_as_float
 from distutils.util import strtobool
 from skimage import color
 import numpy as np
