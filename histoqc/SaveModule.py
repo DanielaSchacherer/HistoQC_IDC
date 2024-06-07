@@ -25,15 +25,16 @@ def blend2Images(img, mask):
 def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     binary_mask = mask.astype(np.uint8) # conversion from bool array to binary image 
 
-    property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure")
+    # to be adapted: 
+    property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure") 
     property_type = hd.sr.CodedConcept("84640000", "SCT", "Nucleus")
     segment_descriptions = [
         hd.seg.SegmentDescription(
             segment_number=1,
-            segment_label='Segment #1',
+            segment_label='Usable tissue area',
             segmented_property_category=property_category,
             segmented_property_type=property_type,
-            algorithm_type=hd.seg.SegmentAlgorithmTypeValues.MANUAL,
+            algorithm_type=hd.seg.SegmentAlgorithmTypeValues.AUTOMATIC,
         )
     ]
     
@@ -44,18 +45,13 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
         segmentation_type=hd.seg.SegmentationTypeValues.BINARY,
         segment_descriptions=segment_descriptions,
         series_instance_uid=hd.UID(),
-        series_number=1,
+        #series_number=1,
         sop_instance_uid=hd.UID(),
-        instance_number=1,
-        manufacturer='Foo Corp.',
-        manufacturer_model_name='Slide Segmentation Algorithm',
-        software_versions='0.0.1',
-        device_serial_number='1234567890',
+        #instance_number=1,
         tile_pixel_array=True,
     )
 
     seg.save_as(s["outdir"] + os.sep + s["filename"] + "_mask_use.dcm")
-
 
 
 def saveFinalMask(s, params):
