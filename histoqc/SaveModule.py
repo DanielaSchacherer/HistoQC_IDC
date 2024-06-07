@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from histoqc.BaseImage import BaseImage
 import highdicom as hd 
 from pydicom import dcmread
+from pydicom.sr.codedict import codes
 
 
 def blend2Images(img, mask):
