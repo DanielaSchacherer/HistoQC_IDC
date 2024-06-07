@@ -10,6 +10,7 @@ from histoqc.BaseImage import BaseImage
 import highdicom as hd 
 from pydicom import dcmread
 
+
 def blend2Images(img, mask):
     if (img.ndim == 3):
         img = color.rgb2gray(img)
@@ -20,25 +21,9 @@ def blend2Images(img, mask):
     out = np.concatenate((mask, img, mask), 2)
     return out
 
+
 def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     binary_mask = mask.astype(np.uint8) # conversion from bool array to binary image 
-    # printing testing 
-    message = f"bindim {binary_mask.ndim} {binary_mask.dtype} {binary_mask.min()} {binary_mask.max()} {type(binary_mask)}"
-    logging.warning(message)
-    s["warnings"].append(message)
-
-    source_image = dcmread(os.path.join(s['dir'], s['filename']))
-    test_mask = np.zeros(
-    (
-        source_image.TotalPixelMatrixRows,
-        source_image.TotalPixelMatrixColumns
-    ),
-    dtype=np.uint8,
-    )
-    test_mask[38:43, 5:41] = 1
-    message = f"bindim {test_mask.ndim} {test_mask.dtype} {test_mask.min()} {test_mask.max()} {type(test_mask)}"
-    logging.warning(message)
-    s["warnings"].append(message)
 
     property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure")
     property_type = hd.sr.CodedConcept("84640000", "SCT", "Nucleus")
@@ -51,8 +36,8 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
             algorithm_type=hd.seg.SegmentAlgorithmTypeValues.MANUAL,
         )
     ]
-
     
+    source_image = dcmread(os.path.join(s['dir'], s['filename']))
     seg = hd.seg.Segmentation(
         source_images=[source_image],
         pixel_array=binary_mask,
@@ -68,6 +53,9 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
         device_serial_number='1234567890',
         tile_pixel_array=True,
     )
+
+    seg.save_as(s["outdir"] + os.sep + s["filename"] + "_mask_use.dcm")
+
 
 
 def saveFinalMask(s, params):
