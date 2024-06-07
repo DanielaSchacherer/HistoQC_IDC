@@ -21,7 +21,7 @@ def blend2Images(img, mask):
     return out
 
 def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
-    binary_mask = img_as_float(mask) 
+    binary_mask = mask*1 # conversion from bool array to binary image 
     # printing testing 
     message = f"bindim {binary_mask.ndim} {binary_mask.shape} {binary_mask.min()} {binary_mask.max()} {type(binary_mask)}"
     logging.warning(message)
