@@ -25,6 +25,12 @@ def blend2Images(img, mask):
 def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     binary_mask = mask.astype(np.uint8) # conversion from bool array to binary image 
 
+    algorithm_identification = hd.AlgorithmIdentificationSequence(
+        name='HistoQC',
+        version='my_version', # to be adapted
+        family=codes.cid7162.ArtificialIntelligence
+    )
+    
     # to be adapted: 
     property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure") 
     property_type = hd.sr.CodedConcept("84640000", "SCT", "Nucleus")
@@ -35,6 +41,7 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
             segmented_property_category=property_category,
             segmented_property_type=property_type,
             algorithm_type=hd.seg.SegmentAlgorithmTypeValues.AUTOMATIC,
+            algorithm_identification=algorithm_identification,
         )
     ]
     
