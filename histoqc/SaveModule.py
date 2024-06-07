@@ -23,7 +23,7 @@ def blend2Images(img, mask):
 def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     binary_mask = img_as_ubyte(mask) 
     # printing testing 
-    message = f"bindim {binary_mask.ndim} {binary_mask}"
+    message = f"bindim {binary_mask.ndim} {binary_mask.shape} {binary_mask.min()} {binary_mask.max()} {type(binary_mask)}"
     logging.warning(message)
     s["warnings"].append(message)
 
@@ -36,7 +36,7 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     dtype=np.uint8,
     )
     test_mask[38:43, 5:41] = 1
-    message = f"bindim {test_mask.ndim} {test_mask}"
+    message = f"bindim {test_mask.ndim} {test_mask.shape} {test_mask.min()} {test_mask.max()} {type(test_mask)}"
     logging.warning(message)
     s["warnings"].append(message)
 
