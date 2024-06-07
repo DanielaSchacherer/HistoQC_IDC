@@ -55,7 +55,7 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     
     seg = hd.seg.Segmentation(
         source_images=[source_image],
-        pixel_array=test_mask,
+        pixel_array=binary_mask,
         segmentation_type=hd.seg.SegmentationTypeValues.BINARY,
         segment_descriptions=segment_descriptions,
         series_instance_uid=hd.UID(),
