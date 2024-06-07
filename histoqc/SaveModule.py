@@ -25,21 +25,22 @@ def blend2Images(img, mask):
 
 def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
     binary_mask = mask.astype(np.uint8) # conversion from bool array to binary image 
-
+    
+    # Description of specific algorithm used for generating the segmentation
     algorithm_identification = hd.AlgorithmIdentificationSequence(
         name='HistoQC',
         version='my_version', # to be adapted
         family=codes.cid7162.ArtificialIntelligence
     )
     
-    # to be adapted: 
-    property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure") 
-    property_type = hd.sr.CodedConcept("84640000", "SCT", "Nucleus")
+    # Description of "Usable tissue area" produced by the algorithm defined above: 
+    property_category = hd.sr.CodedConcept("91723000", "SCT", "Anatomical Structure") # to be adapted 
+    property_type = hd.sr.CodedConcept("84640000", "SCT", "Nucleus") # to be adapted 
     segment_descriptions = [
         hd.seg.SegmentDescription(
             segment_number=1,
             segment_label='Usable tissue area',
-            segmented_property_category=property_category,
+            segmented_property_category=property_category, 
             segmented_property_type=property_type,
             algorithm_type=hd.seg.SegmentAlgorithmTypeValues.AUTOMATIC,
             algorithm_identification=algorithm_identification,
@@ -53,9 +54,13 @@ def saveFinalMaskToDicomSeg(mask: np.ndarray[bool], s: BaseImage) -> None:
         segmentation_type=hd.seg.SegmentationTypeValues.BINARY,
         segment_descriptions=segment_descriptions,
         series_instance_uid=hd.UID(),
-        #series_number=1,
+        series_number=1,
         sop_instance_uid=hd.UID(),
-        #instance_number=1,
+        instance_number=1,
+        manufacturer='Foo Corp.', # to be adapted 
+        manufacturer_model_name='Multi-Organ Segmentation Algorithm', # to be adapted 
+        software_versions='0.0.1', # to be adapted 
+        device_serial_number='1234567890', # to be adapted 
         tile_pixel_array=True,
     )
 
